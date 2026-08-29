@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kingdom Conference 2026 — Registration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="page">
+  <header class="header fade-in">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z"/></svg>
+      <span class="brand-label" id="orgLabel"></span>
+    </div>
+    <h1 class="title" id="programTitle"></h1>
+    <div class="rule"></div>
+    <p class="subtitle">Register below to reserve your place. Every entry is logged to the official conference roll.</p>
+  </header>
+
+  <main>
+    <section class="roll-strip">
+      <div class="roll-top">
+        <span class="roll-label">Conference Roll</span>
+        <span class="roll-count font-ledger" id="rollCount">—</span>
+      </div>
+      <div class="roll-bar"><div class="roll-fill" id="rollFill" style="width:0%"></div></div>
+      <p class="roll-note" id="rollNote"></p>
+    </section>
+
+    <div id="formSection" class="fade-in">
+      <form class="card" id="regForm" novalidate>
+        <div class="field">
+          <label class="field-label" for="fullName">Full Name</label>
+          <input class="field-input" type="text" id="fullName" placeholder="e.g. Aluko Tomiwa Israel" autocomplete="name" />
+          <p class="field-error hidden" id="err-fullName"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="phone">Phone Number</label>
+          <input class="field-input" type="tel" id="phone" placeholder="e.g. 080XXXXXXXX" autocomplete="tel" />
+          <p class="field-error hidden" id="err-phone"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Gender</label>
+          <div class="toggle-group" id="genderToggle" role="radiogroup" aria-label="Gender">
+            <button type="button" class="toggle-btn" data-value="Male">Male</button>
+            <button type="button" class="toggle-btn" data-value="Female">Female</button>
+          </div>
+          <p class="field-error hidden" id="err-gender"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Worker / Non-worker</label>
+          <div class="toggle-group" id="workerToggle" role="radiogroup" aria-label="Worker status">
+            <button type="button" class="toggle-btn" data-value="Worker">Worker</button>
+            <button type="button" class="toggle-btn" data-value="Non-worker">Non-worker</button>
+          </div>
+          <p class="field-error hidden" id="err-workerStatus"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="branch">Branch</label>
+          <div class="select-wrap">
+            <select class="field-select" id="branch">
+              <option value="">Select your branch</option>
+            </select>
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <p class="field-error hidden" id="err-branch"></p>
+        </div>
+
+        <div class="alert-box hidden" id="submitError"></div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Complete Registration</button>
+      </form>
+    </div>
+
+    <div id="ticketSection" class="hidden"></div>
+    <div id="fullSection" class="hidden card full-card">
+      <p style="margin:0 0 8px; opacity:.7;">This program has reached capacity.</p>
+    </div>
+
+    <div class="admin-link-wrap">
+      <a class="admin-link" href="admin.html">Staff admin login</a>
+    </div>
+  </main>
+</div>
+
+<script type="module" src="register.js"></script>
+</body>
+</html>

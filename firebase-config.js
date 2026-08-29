@@ -1,0 +1,57 @@
+// ---------------------------------------------------------------------------
+// PASTE YOUR FIREBASE PROJECT CONFIG HERE
+// Firebase Console -> Project Settings -> General -> Your apps -> SDK setup
+// ---------------------------------------------------------------------------
+export const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
+};
+
+// ---------------------------------------------------------------------------
+// Program details — edit these to reuse this site for a future event
+// ---------------------------------------------------------------------------
+export const PROGRAM_NAME = "Kingdom Conference 2026";
+export const ORG_NAME = "Kingdom Gospel Mission Incorporated";
+export const CAPACITY = 1000;
+
+export const BRANCH_GROUPS = [
+  {
+    region: "Osun State",
+    branches: [
+      "Zion Assembly (Omi Oko, Isokun, Ilesha)",
+      "Faith Assembly (Irojo, Ilesha, Osun State)",
+      "Peace Assembly (Imogbara, Osun State)",
+      "Agape Assembly (Iwara, Osun State)",
+      "Praise Assembly (Isona, Osun State)",
+      "Joy Assembly (Osu, Osun State)",
+      "Christ the King Assembly (Onigbogi, Ilesha, Osun State)",
+      "Divine Mercy Assembly (Ilaje Ile, Ilesha, Osun State)",
+      "Covenant Camp Ground (Eweta, Ilesha, Osun State)",
+      "Hephzibah Assembly (Oke Omo, Atakumosa West, Ilesha, Osun State)",
+    ],
+  },
+  {
+    region: "Kogi State",
+    branches: [
+      "Anyigba",
+      "Abocho",
+      "Ajudacha",
+      "Ajakolikpa",
+      "Ajugbadaligi",
+      "Oja Odan",
+      "Tajimi",
+      "Kpareke",
+    ],
+  },
+];
+
+export const ALL_BRANCHES = BRANCH_GROUPS.flatMap((g) => g.branches);
+
+export function branchRegion(branchName) {
+  const grp = BRANCH_GROUPS.find((g) => g.branches.includes(branchName));
+  return grp ? grp.region : "Other";
+}
