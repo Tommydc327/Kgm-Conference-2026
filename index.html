@@ -91,6 +91,17 @@
   </main>
 </div>
 
-<script type="module" src="register.js"></script>
+<script type="module">
+  import("./register.js").catch((err) => {
+    console.error(err);
+    document.body.insertAdjacentHTML(
+      "afterbegin",
+      `<div style="background:#c24329;color:#fff;padding:16px;font-family:sans-serif;font-size:14px;line-height:1.5;">
+         <strong>Registration script failed to load.</strong><br>
+         ${(err && err.message) ? err.message : String(err)}
+       </div>`
+    );
+  });
+</script>
 </body>
 </html>
