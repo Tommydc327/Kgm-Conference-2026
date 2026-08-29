@@ -1,11 +1,11 @@
-import { initializeApp } from "https://esm.sh/firebase@10/app";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
   doc,
   collection,
   getDoc,
   runTransaction,
-} from "https://esm.sh/firebase@10/firestore";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig, PROGRAM_NAME, ORG_NAME, CAPACITY, BRANCH_GROUPS } from "./firebase-config.js";
 
 const app = initializeApp(firebaseConfig);

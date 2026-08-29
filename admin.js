@@ -1,10 +1,10 @@
-import { initializeApp } from "https://esm.sh/firebase@10/app";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
-} from "https://esm.sh/firebase@10/auth";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore,
   collection,
@@ -13,7 +13,7 @@ import {
   deleteDoc,
   query,
   orderBy,
-} from "https://esm.sh/firebase@10/firestore";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig, PROGRAM_NAME, CAPACITY, BRANCH_GROUPS, ALL_BRANCHES, branchRegion } from "./firebase-config.js";
 
 const app = initializeApp(firebaseConfig);
