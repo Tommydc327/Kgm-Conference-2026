@@ -1,19 +1,12 @@
-// ---------------------------------------------------------------------------
-// PASTE YOUR FIREBASE PROJECT CONFIG HERE
-// Firebase Console -> Project Settings -> General -> Your apps -> SDK setup
-// ---------------------------------------------------------------------------
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyAfqSYNTfmNtI3-fSP7zw0XZojUopQCG0E",
+  authDomain: "kgm-conference-2026-399ae.firebaseapp.com",
+  projectId: "kgm-conference-2026-399ae",
+  storageBucket: "kgm-conference-2026-399ae.firebasestorage.app",
+  messagingSenderId: "121226235791",
+  appId: "1:121226235791:web:2d25afecd7ba30c5a3c5fa",
 };
 
-// ---------------------------------------------------------------------------
-// Program details — edit these to reuse this site for a future event
-// ---------------------------------------------------------------------------
 export const PROGRAM_NAME = "Kingdom Conference 2026";
 export const ORG_NAME = "Kingdom Gospel Mission Incorporated";
 export const CAPACITY = 1000;
