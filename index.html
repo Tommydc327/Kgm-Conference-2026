@@ -13,7 +13,10 @@
 <div class="page">
   <header class="header fade-in">
     <div class="brand">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z"/></svg>
+      <div class="logo-wrap" id="logoWrap">
+        <img src="logo.png" alt="KGM logo" class="logo-img" id="logoImg" />
+        <span class="logo-fallback-text">KGM</span>
+      </div>
       <span class="brand-label" id="orgLabel"></span>
     </div>
     <h1 class="title" id="programTitle"></h1>
@@ -22,6 +25,11 @@
   </header>
 
   <main>
+    <div class="hero-slideshow fade-in">
+      <div class="slide-track" id="slideTrack"></div>
+      <div class="slide-dots" id="slideDots"></div>
+    </div>
+
     <section class="roll-strip">
       <div class="roll-top">
         <span class="roll-label">Conference Roll</span>
@@ -64,6 +72,14 @@
         </div>
 
         <div class="field">
+          <label class="field-label">Are you from a KGM branch, or visiting?</label>
+          <div class="toggle-group" id="membershipToggle" role="radiogroup" aria-label="Membership">
+            <button type="button" class="toggle-btn active" data-value="Member">KGM Branch</button>
+            <button type="button" class="toggle-btn" data-value="Visitor">Visitor</button>
+          </div>
+        </div>
+
+        <div class="field" id="branchFieldWrap">
           <label class="field-label" for="branch">Branch</label>
           <div class="select-wrap">
             <select class="field-select" id="branch">
@@ -72,6 +88,12 @@
             <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </div>
           <p class="field-error hidden" id="err-branch"></p>
+        </div>
+
+        <div class="field hidden" id="visitorFieldWrap">
+          <label class="field-label" for="visitorFrom">Which church are you coming from?</label>
+          <input class="field-input" type="text" id="visitorFrom" placeholder="e.g. name and location of your church" />
+          <p class="field-error hidden" id="err-visitorFrom"></p>
         </div>
 
         <div class="alert-box hidden" id="submitError"></div>
@@ -91,6 +113,7 @@
   </main>
 </div>
 
+<script src="slideshow.js"></script>
 <script type="module">
   import("./register.js").catch((err) => {
     console.error(err);

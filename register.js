@@ -31,22 +31,40 @@ BRANCH_GROUPS.forEach((group) => {
 });
 
 // ---------------------------------------------------------------------------
-// Toggle groups (Gender, Worker status)
+// Toggle groups (Gender, Worker status, Membership)
 // ---------------------------------------------------------------------------
-function wireToggle(containerId) {
+function wireToggle(containerId, onChange) {
   const container = document.getElementById(containerId);
   const buttons = Array.from(container.querySelectorAll(".toggle-btn"));
-  let value = "";
+  const preActive = buttons.find((b) => b.classList.contains("active"));
+  let value = preActive ? preActive.dataset.value : "";
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
       value = btn.dataset.value;
       buttons.forEach((b) => b.classList.toggle("active", b === btn));
+      if (onChange) onChange(value);
     });
   });
-  return { get: () => value };
+  return { get: () => value, reset: () => { value = preActive ? preActive.dataset.value : ""; buttons.forEach((b) => b.classList.toggle("active", b === preActive)); } };
 }
 const genderToggle = wireToggle("genderToggle");
 const workerToggle = wireToggle("workerToggle");
+
+const branchFieldWrap = document.getElementById("branchFieldWrap");
+const visitorFieldWrap = document.getElementById("visitorFieldWrap");
+const visitorFromInput = document.getElementById("visitorFrom");
+
+function applyMembershipVisibility(value) {
+  if (value === "Visitor") {
+    branchFieldWrap.classList.add("hidden");
+    visitorFieldWrap.classList.remove("hidden");
+  } else {
+    visitorFieldWrap.classList.add("hidden");
+    branchFieldWrap.classList.remove("hidden");
+  }
+}
+const membershipToggle = wireToggle("membershipToggle", applyMembershipVisibility);
+applyMembershipVisibility(membershipToggle.get());
 
 // ---------------------------------------------------------------------------
 // Capacity roll strip
@@ -139,11 +157,21 @@ function validate() {
     ok = false;
   } else setFieldError("workerStatus", "");
 
-  const branch = branchSelect.value;
-  if (!branch) {
-    setFieldError("branch", "Select your branch.");
-    ok = false;
-  } else setFieldError("branch", "");
+  if (membershipToggle.get() === "Visitor") {
+    const visitorFrom = visitorFromInput.value.trim();
+    if (visitorFrom.length < 2) {
+      setFieldError("visitorFrom", "Let us know which church you're visiting from.");
+      ok = false;
+    } else setFieldError("visitorFrom", "");
+    setFieldError("branch", "");
+  } else {
+    const branch = branchSelect.value;
+    if (!branch) {
+      setFieldError("branch", "Select your branch.");
+      ok = false;
+    } else setFieldError("branch", "");
+    setFieldError("visitorFrom", "");
+  }
 
   return ok;
 }
@@ -152,6 +180,10 @@ function showTicket(record) {
   formSection.classList.add("hidden");
   const ticketSection = document.getElementById("ticketSection");
   ticketSection.classList.remove("hidden");
+  const branchRow =
+    record.branch === "Visitor"
+      ? `<div class="ticket-row"><dt>Coming from</dt><dd>${record.visitorFrom || "Visitor"}</dd></div>`
+      : `<div class="ticket-row"><dt>Branch</dt><dd>${record.branch}</dd></div>`;
   ticketSection.innerHTML = `
     <div class="ticket-wrap fade-in">
       <div class="card ticket">
@@ -167,7 +199,7 @@ function showTicket(record) {
           <div class="ticket-row"><dt>Name</dt><dd>${record.fullName}</dd></div>
           <div class="ticket-row"><dt>Gender</dt><dd>${record.gender}</dd></div>
           <div class="ticket-row"><dt>Category</dt><dd>${record.workerStatus}</dd></div>
-          <div class="ticket-row"><dt>Branch</dt><dd>${record.branch}</dd></div>
+          ${branchRow}
           <div class="ticket-row"><dt>Program</dt><dd>${PROGRAM_NAME}</dd></div>
         </dl>
       </div>
@@ -177,8 +209,10 @@ function showTicket(record) {
   `;
   document.getElementById("registerAnotherBtn").addEventListener("click", () => {
     form.reset();
-    genderToggle.buttons?.forEach?.(() => {});
-    document.querySelectorAll(".toggle-btn.active").forEach((b) => b.classList.remove("active"));
+    genderToggle.reset();
+    workerToggle.reset();
+    membershipToggle.reset();
+    applyMembershipVisibility(membershipToggle.get());
     ticketSection.classList.add("hidden");
     ticketSection.innerHTML = "";
     formSection.classList.remove("hidden");
@@ -200,7 +234,9 @@ form.addEventListener("submit", async (e) => {
   const phoneDigits = sanitizePhone(phone);
   const gender = genderToggle.get();
   const workerStatus = workerToggle.get();
-  const branch = branchSelect.value;
+  const isVisitor = membershipToggle.get() === "Visitor";
+  const branch = isVisitor ? "Visitor" : branchSelect.value;
+  const visitorFrom = isVisitor ? visitorFromInput.value.trim() : "";
 
   try {
     const regRef = doc(collection(db, "registrations"));
@@ -225,6 +261,7 @@ form.addEventListener("submit", async (e) => {
         gender,
         workerStatus,
         branch,
+        visitorFrom,
         timestamp: Date.now(),
       };
       tx.set(regRef, rec);
@@ -234,6 +271,10 @@ form.addEventListener("submit", async (e) => {
     });
 
     showTicket(record);
+    rollCountEl.textContent = `${record.seq} / ${CAPACITY}`;
+    rollFillEl.style.width = `${Math.min((record.seq / CAPACITY) * 100, 100)}%`;
+    const spotsLeftNow = Math.max(CAPACITY - record.seq, 0);
+    rollNoteEl.textContent = spotsLeftNow === 0 ? "Capacity reached." : `${spotsLeftNow} spot${spotsLeftNow === 1 ? "" : "s"} remaining.`;
   } catch (err) {
     if (err.message === "DUPLICATE") {
       submitErrorEl.textContent = `This phone number is already registered for ${PROGRAM_NAME}. No need to register again.`;
@@ -242,7 +283,7 @@ form.addEventListener("submit", async (e) => {
       refreshRoll();
     } else {
       console.error(err);
-      submitErrorEl.textContent = "Something went wrong saving your registration. Please try again.";
+      submitErrorEl.textContent = `Something went wrong: ${err.code || err.message || String(err)}`;
     }
     submitErrorEl.classList.remove("hidden");
   } finally {

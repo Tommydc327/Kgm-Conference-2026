@@ -74,6 +74,10 @@ ALL_BRANCHES.forEach((b) => {
   opt.textContent = b;
   filterBranchSelect.appendChild(opt);
 });
+const visitorOpt = document.createElement("option");
+visitorOpt.value = "Visitor";
+visitorOpt.textContent = "Visitors";
+filterBranchSelect.appendChild(visitorOpt);
 
 async function loadRegistrations() {
   document.getElementById("loadingBlock").classList.remove("hidden");
@@ -103,6 +107,7 @@ function renderStats() {
   const female = registrations.filter((r) => r.gender === "Female").length;
   const workers = registrations.filter((r) => r.workerStatus === "Worker").length;
   const nonWorkers = registrations.filter((r) => r.workerStatus === "Non-worker").length;
+  const visitors = registrations.filter((r) => r.branch === "Visitor").length;
 
   const cards = [
     ["Total / Capacity", `${registrations.length} / ${CAPACITY}`],
@@ -110,6 +115,7 @@ function renderStats() {
     ["Female", female],
     ["Workers", workers],
     ["Non-workers", nonWorkers],
+    ["Visitors", visitors],
   ];
   document.getElementById("statsGrid").innerHTML = cards
     .map(([label, value]) => `<div class="stat-card"><p class="stat-label">${label}</p><p class="stat-value">${value}</p></div>`)
@@ -151,7 +157,7 @@ function getFiltered() {
   const w = document.getElementById("filterWorker").value;
   const b = document.getElementById("filterBranch").value;
   return registrations.filter((r) => {
-    if (q && !((r.fullName || "").toLowerCase().includes(q) || (r.phone || "").includes(q))) return false;
+    if (q && !((r.fullName || "").toLowerCase().includes(q) || (r.phone || "").includes(q) || (r.visitorFrom || "").toLowerCase().includes(q))) return false;
     if (g && r.gender !== g) return false;
     if (w && r.workerStatus !== w) return false;
     if (b && r.branch !== b) return false;
@@ -163,7 +169,7 @@ function renderTable() {
   const filtered = getFiltered();
   const body = document.getElementById("tableBody");
   if (filtered.length === 0) {
-    body.innerHTML = `<tr class="empty-row"><td colspan="8">No registrants match these filters.</td></tr>`;
+    body.innerHTML = `<tr class="empty-row"><td colspan="9">No registrants match these filters.</td></tr>`;
   } else {
     body.innerHTML = filtered
       .map(
@@ -175,6 +181,7 @@ function renderTable() {
           <td>${r.gender}</td>
           <td>${r.workerStatus}</td>
           <td>${r.branch}</td>
+          <td>${r.visitorFrom || ""}</td>
           <td class="row-time">${formatDateTime(r.timestamp)}</td>
           <td><button class="row-delete" data-id="${r.id}" aria-label="Delete ${r.fullName}">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
@@ -248,12 +255,12 @@ document.getElementById("confirmDeleteBtn").addEventListener("click", async () =
 // CSV export
 // ---------------------------------------------------------------------------
 function toCSV(rows) {
-  const headers = ["Seq", "Full Name", "Phone", "Gender", "Category", "Branch", "Region", "Registered At"];
+  const headers = ["Seq", "Full Name", "Phone", "Gender", "Category", "Branch", "Coming From", "Region", "Registered At"];
   const escape = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
   const lines = [headers.map(escape).join(",")];
   rows.forEach((r) => {
     lines.push(
-      [r.seq ?? "", r.fullName, r.phone, r.gender, r.workerStatus, r.branch, branchRegion(r.branch), formatDateTime(r.timestamp)]
+      [r.seq ?? "", r.fullName, r.phone, r.gender, r.workerStatus, r.branch, r.visitorFrom || "", branchRegion(r.branch), formatDateTime(r.timestamp)]
         .map(escape)
         .join(",")
     );
